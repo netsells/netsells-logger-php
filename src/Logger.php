@@ -12,6 +12,20 @@ class LaravelLogger extends JsonFormatter
 {
     protected $includeStacktraces = true;
 
+    protected $project;
+    protected $component = 'core';
+    protected $subComponent = 'php';
+
+    public static function forProject($project, $component = 'core', $subComponent = 'php')
+    {
+        $instance = new static;
+        $instance->project = $project;
+        $instance->component = $component;
+        $instance->subComponent = $subComponent;
+
+        return $instance;
+    }
+
     public function format(array $record): string
     {
         $normalized = (array) $this->normalize($record);
@@ -40,9 +54,9 @@ class LaravelLogger extends JsonFormatter
         $data = [
             'app' => [
                 'hostname' => gethostname(),
-                'project' => 'hub',
-                'component' => 'core',
-                'sub-component' => 'php',
+                'project' => $this->project,
+                'component' => $this->component,
+                'sub-component' => $this->subComponent,
             ],
             'event' => [
                 'created' => $this->formatEventTime($normalized['datetime']),
