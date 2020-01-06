@@ -1,0 +1,28 @@
+{
+    "name": "netsells/logger-php",
+    "description": "Log formatter for Netsells logging",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sam Jordan",
+            "email": "sam@netsells.co.uk"
+        }
+    ],
+    "require": {
+    },
+    "require-dev": {
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Netsells\\Logger\\LaravelServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Netsells\\LaravelLogger\\": "src"
+        }
+    }
+}
