@@ -13,17 +13,14 @@ class LaravelLogger extends JsonFormatter
     protected $includeStacktraces = true;
 
     protected $project;
-    protected $component = 'core';
-    protected $subComponent = 'php';
+    protected $component;
+    protected $subComponent;
 
-    public static function forProject($project, $component = 'core', $subComponent = 'php')
+    public function __construct($project, $component = 'core', $subComponent = 'php')
     {
-        $instance = new static;
-        $instance->project = $project;
-        $instance->component = $component;
-        $instance->subComponent = $subComponent;
-
-        return $instance;
+        $this->project = $project;
+        $this->component = $component;
+        $this->subComponent = $subComponent;
     }
 
     public function format(array $record): string
