@@ -21,6 +21,8 @@ class LaravelLogger extends JsonFormatter
         $this->project = $project;
         $this->component = $component;
         $this->subComponent = $subComponent;
+
+        parent::__construct(self::BATCH_MODE_JSON, true);
     }
 
     public function format(array $record): string
@@ -91,7 +93,7 @@ class LaravelLogger extends JsonFormatter
      * @param int $depth
      * @return array
      */
-    protected function normalizeException(Throwable $e, int $depth = 0): array
+    protected function normalizeException($e)
     {
         if (!$e instanceof \Exception && !$e instanceof \Throwable) {
             throw new \InvalidArgumentException('Exception/Throwable expected, got '.gettype($e).' / '.Utils::getClass($e));
