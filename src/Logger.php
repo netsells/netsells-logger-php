@@ -20,6 +20,8 @@ class LaravelLogger implements FormatterInterface
         $this->project = $project;
         $this->component = $component;
         $this->subComponent = $subComponent;
+
+        parent::__construct(self::BATCH_MODE_JSON, true);
     }
 
     /**
