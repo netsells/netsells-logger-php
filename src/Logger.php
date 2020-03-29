@@ -2,13 +2,12 @@
 
 namespace Netsells\Logger;
 
+use Throwable;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Request;
-use Monolog\Formatter\JsonFormatter;
-use Monolog\Utils;
-use Throwable;
+use Monolog\Formatter\FormatterInterface;
 
-class LaravelLogger extends JsonFormatter
+class LaravelLogger implements FormatterInterface
 {
     protected $includeStacktraces = true;
 
@@ -23,6 +22,12 @@ class LaravelLogger extends JsonFormatter
         $this->subComponent = $subComponent;
     }
 
+    /**
+     * Formats a log record.
+     *
+     * @param  array $record A record to format
+     * @return mixed The formatted record
+     */
     public function format(array $record): string
     {
         $normalized = (array) $this->normalize($record);
@@ -36,7 +41,33 @@ class LaravelLogger extends JsonFormatter
         // Take the "ready to log" output from laravel and process it further
         $normalized = $this->formatForNetsells($normalized);
 
-        return $this->toJson($normalized, true) . ($this->appendNewline ? "\n" : '');
+        return $this->toJson($normalized) . "\n";
+    }
+
+    /**
+     * Formats a set of log records.
+     *
+     * @param  array $records A set of records to format
+     * @return mixed The formatted set of records
+     */
+    public function formatBatch(array $records)
+    {
+        $instance = $this;
+
+        $oldNewline = $this->appendNewline;
+        $this->appendNewline = false;
+        array_walk($records, function (&$value, $key) use ($instance) {
+            $value = $instance->format($value);
+        });
+        $this->appendNewline = $oldNewline;
+
+        return implode("\n", $records);
+    }
+
+    private function toJson($data)
+    {
+        // JSON encoding errors should not break the app, suppress these!
+        return @json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -83,6 +114,42 @@ class LaravelLogger extends JsonFormatter
     }
 
     /**
+     * Normalizes given $data.
+     *
+     * @param mixed $data
+     *
+     * @return mixed
+     */
+    protected function normalize($data, $depth = 0)
+    {
+        if ($depth > 9) {
+            return 'Over 9 levels deep, aborting normalization';
+        }
+
+        if (is_array($data) || $data instanceof \Traversable) {
+            $normalized = array();
+
+            $count = 1;
+            foreach ($data as $key => $value) {
+                if ($count++ > 1000) {
+                    $normalized['...'] = 'Over 1000 items ('.count($data).' total), aborting normalization';
+                    break;
+                }
+
+                $normalized[$key] = $this->normalize($value, $depth+1);
+            }
+
+            return $normalized;
+        }
+
+        if ($data instanceof Exception || $data instanceof Throwable) {
+            return $this->normalizeException($data);
+        }
+
+        return $data;
+    }
+
+    /**
      * Normalizes given exception with or without its own stack trace based on
      * `includeStacktraces` property.
      *
@@ -91,7 +158,7 @@ class LaravelLogger extends JsonFormatter
      * @param int $depth
      * @return array
      */
-    protected function normalizeException(Throwable $e, int $depth = 0): array
+    protected function normalizeException($e)
     {
         if (!$e instanceof \Exception && !$e instanceof \Throwable) {
             throw new \InvalidArgumentException('Exception/Throwable expected, got '.gettype($e).' / '.Utils::getClass($e));
