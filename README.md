@@ -29,3 +29,8 @@ Add the following channel to your `config/logging.php` file. Ensure that you set
 ```
 
 When you are ready to use the new format, either set your `LOG_CHANNEL` to `daily_json` or add `daily_json` to your stack channels to benefit from multiple channels.
+
+## TODO
+
+* Add tests
+* Add setup examples for monolog
