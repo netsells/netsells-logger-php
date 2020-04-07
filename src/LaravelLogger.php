@@ -161,11 +161,11 @@ class LaravelLogger implements FormatterInterface
     protected function normalizeException($e)
     {
         if (!$e instanceof \Exception && !$e instanceof \Throwable) {
-            throw new \InvalidArgumentException('Exception/Throwable expected, got '.gettype($e).' / '.Utils::getClass($e));
+            throw new \InvalidArgumentException('Exception/Throwable expected, got '.gettype($e).' / '.get_class($e));
         }
 
         $data = array(
-            'type' => Utils::getClass($e),
+            'type' => get_class($e),
             'message' => $e->getMessage(),
             'code' => (int) $e->getCode(),
             'source' => $e->getFile().':'.$e->getLine(),
