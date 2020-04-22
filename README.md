@@ -22,6 +22,7 @@ Add the following channel to your `config/logging.php` file. Ensure that you set
         'project' => 'project-name',
         // optional - 'component' => 'core',
         // optional - 'subComponent' => 'php',
+        // optional - 'environment' => env('APP_ENV'),
     ],
     'level' => 'debug',
     'days' => 14,
