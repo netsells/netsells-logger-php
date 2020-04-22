@@ -21,7 +21,7 @@ class LaravelLogger implements FormatterInterface
         $this->project = $project;
         $this->component = $component;
         $this->subComponent = $subComponent;
-        $this->environment = $environment;
+        $this->environment = $environment ?? env('APP_ENV', null);
     }
 
     /**
