@@ -14,12 +14,14 @@ class LaravelLogger implements FormatterInterface
     protected $project;
     protected $component;
     protected $subComponent;
+    private $environment;
 
-    public function __construct($project, $component = 'core', $subComponent = 'php')
+    public function __construct($project, $component = 'core', $subComponent = 'php', $environment = null)
     {
         $this->project = $project;
         $this->component = $component;
         $this->subComponent = $subComponent;
+        $this->environment = $environment;
     }
 
     /**
@@ -85,6 +87,7 @@ class LaravelLogger implements FormatterInterface
                 'project' => $this->project,
                 'component' => $this->component,
                 'sub-component' => $this->subComponent,
+                'environment' => $this->environment,
             ],
             'event' => [
                 'created' => $this->formatEventTime($normalized['datetime']),
