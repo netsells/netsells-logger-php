@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "ramsey/uuid": "^3.0",
+        "ramsey/uuid": "^3.0|^4.0",
         "monolog/monolog": "^1.12|^2.0"
     },
     "require-dev": {
