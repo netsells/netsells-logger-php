@@ -1,4 +1,5 @@
 {
+    "version": "2.0.0",
     "name": "netsells/logger-php",
     "description": "Log formatter for Netsells logging",
     "type": "library",
@@ -9,8 +10,10 @@
             "email": "sam@netsells.co.uk"
         }
     ],
+    "minimum-stability": "dev",
+    "prefer-stable": false,
     "require": {
-        "ramsey/uuid": "^3.0",
+        "ramsey/uuid": "^3.0|^4.0",
         "monolog/monolog": "^1.12|^2.0"
     },
     "require-dev": {
