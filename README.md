@@ -16,7 +16,7 @@ Add the following channel to your `config/logging.php` file. Ensure that you set
 ```php
 'daily_json' => [
     'driver' => 'daily',
-    'path' => storage_path('logs/laravel-json.log'),
+    'path' => env('LOG_PATH', storage_path('logs/laravel-json.log')),
     'formatter' => Netsells\Logger\LaravelLogger::class,
     'formatter_with' => [
         'project' => 'project-name',
@@ -24,7 +24,7 @@ Add the following channel to your `config/logging.php` file. Ensure that you set
         // optional - 'subComponent' => 'php',
         // optional - 'environment' => env('APP_ENV'),
     ],
-    'level' => 'debug',
+    'level' => env('LOG_LEVEL', 'debug'),
     'days' => 14,
 ],
 ```
